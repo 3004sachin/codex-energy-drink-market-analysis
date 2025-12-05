@@ -12,7 +12,6 @@ My work blends **SQL analysis, dashboarding, and business storytelling** to help
 ## 🚀 Featured Project: CodeX Energy Drink Market & Consumer Insights  
 *A complete end-to-end analytics case study using MySQL & Power BI*
 
-![Project Banner](https://via.placeholder.com/1200x300?text=CodeX+Energy+Drink+Insights)
 
 ### 🔍 Project Overview  
 CodeX, a German energy drink brand, surveyed **10,000 consumers across 10 Indian cities**.  
