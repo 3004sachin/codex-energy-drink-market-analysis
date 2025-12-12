@@ -29,7 +29,7 @@ SELECT Response_ID, COUNT(*)
 FROM fact_survey_responses
 GROUP BY Response_ID
 HAVING COUNT(*) > 1;
--- ---------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------------------------------------
 
 -- 1. Demographic Insights (examples) 
 
@@ -89,7 +89,7 @@ ORDER BY total_youth_responses DESC;
 
 
 
-
+------------------------------------------------------------------------------------------------------------------------
 -- 2. Consumer Preferences: 
 -- -a. What are the preferred ingredients of energy drinks among respondents? 
 SELECT ingredients_expected, COUNT(*) FROM fact_survey_responses 
@@ -110,7 +110,7 @@ ORDER BY COUNT(*) DESC
 
 
 
-
+------------------------------------------------------------------------------------------------------------------------
 -- 3. Competition Analysis: 
 -- - a. Who are the current market leaders? 
 SELECT 
@@ -137,7 +137,7 @@ ORDER BY respondents DESC;
 
 
 
-
+------------------------------------------------------------------------------------------------------------------------
 
 -- 4. Marketing Channels and Brand Awareness: 
 -- -a. Which marketing channel can be used to reach more customers? 
@@ -175,7 +175,7 @@ GROUP BY f.Marketing_channels
 
 
 
-
+------------------------------------------------------------------------------------------------------------------------
 
 --5. Brand Penetration: 
 -- -a. What do people think about our brand? (overall rating) 
@@ -183,13 +183,10 @@ SELECT
     Brand_perception,
     COUNT(*) AS NumberOfRespondents,
     ROUND((COUNT(*) * 100.0 / (SELECT COUNT(*) FROM fact_survey_responses)), 2) AS Percentage
-FROM
-    fact_survey_responses
-    where Current_brands = 'CodeX'
-GROUP BY
-    Brand_perception
-ORDER BY
-    NumberOfRespondents DESC;
+FROM fact_survey_responses
+WHERE Heard_before = 'Yes'
+GROUP BY Brand_perception
+ORDER BY NumberOfRespondents DESC;
 
 
 --b. Which cities do we need to focus more on? 
@@ -208,6 +205,8 @@ ORDER BY
     Brand_Awareness_Percentage ASC,
     Negative_Perception_Percentage DESC;
 
+
+------------------------------------------------------------------------------------------------------------------------
 --6. Purchase Behavior: 
 -- -a. Where do respondents prefer to purchase energy drinks? 
 
@@ -250,19 +249,19 @@ GROUP BY Price_range, Limited_edition_packaging
 ORDER BY Price_range, total_count DESC;
 
 
+------------------------------------------------------------------------------------------------------------------------
+
 -- 7. Product Development 
 -- a. Which area of business should we focus more on our product development? (Branding/taste/availability) 
-SELECT 
-    Reasons_for_choosing_brands,
-    COUNT(*) AS total_count,
-    ROUND(
-        COUNT(*) * 100.0 / (SELECT COUNT(*) FROM fact_survey_responses WHERE Reasons_for_choosing_brands IS NOT NULL),
-        2
-    ) AS percent_share
+SELECT
+  SUM(CASE WHEN Reasons_preventing_trying = 'Not available locally' THEN 1 ELSE 0 END) AS not_available_count,
+  COUNT(*) AS total_codex,
+  ROUND(100.0 * SUM(CASE WHEN Reasons_preventing_trying = 'Not available locally' THEN 1 ELSE 0 END) / COUNT(*), 2) AS pct_not_available_codex
 FROM fact_survey_responses
-where Current_brands = 'CodeX' and Reasons_for_choosing_brands not in ('Other', 'Effectiveness')
-GROUP BY Reasons_for_choosing_brands
-ORDER BY total_count DESC;
+WHERE Current_brands = 'CodeX';
+
+
+
 
 
 select Reasons_preventing_trying, count(Reasons_preventing_trying)
@@ -275,3 +274,5 @@ SELECT Improvements_desired, COUNT(*) AS respondents
 FROM fact_survey_responses
 GROUP BY Improvements_desired
 ORDER BY respondents DESC;
+
+--=========================================================================================================================
